@@ -36,10 +36,12 @@ jobs:
 
       - name: Bump version and push tag
         id: tagging
-        uses: darioblanco/bump-semver@v1.0.0
+        uses: K-Phoen/semver-release-action@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          defaultBump: minor
+          release_branch: main
+          release_strategy: tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push container to ECR
         run: |
