@@ -25,7 +25,7 @@ jobs:
         ref: ${{ github.event.pull_request.merge_commit_sha }}
         fetch-depth: '0'
 
-    
+    # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
     - name: Minor version for each merge
       id: taggerDryRun
       uses: anothrNick/github-tag-action@1.36.0
