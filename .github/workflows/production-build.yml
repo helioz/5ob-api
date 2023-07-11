@@ -26,10 +26,12 @@ jobs:
 
       - name: Compute version tag
         id: taggingDryrun
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@1.67.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+          RELEASE_BRANCHES: main
+          INITIAL_VERSION: 0.0.0
           DRY_RUN: true
 
       - name: Configure AWS Credentials
@@ -58,7 +60,9 @@ jobs:
 
       - name: Tag repository
         id: tagging
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@1.67.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+          RELEASE_BRANCHES: main
+          INITIAL_VERSION: 0.0.0
