@@ -50,7 +50,7 @@ jobs:
         VERSION_TAG: ${{ steps.taggingDryrun.outputs.new_tag }}
       run: |
         echo "Building $ECR_REPOSITORY:$VERSION_TAG"
-        docker build . -t $ECR_REPOSITORY:$VERSION_TAG
+        docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
 
  
