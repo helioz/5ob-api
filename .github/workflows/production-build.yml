@@ -8,6 +8,7 @@ on:
 #     branches: ["main"]
 #   pull_request:
 #     branches: ["main"]
+concurrency: production
 
 jobs:
   build:
@@ -19,6 +20,25 @@ jobs:
     if: github.event.pull_request.merged
 
     steps:
+    - name: Minor version for each merge
+      id: taggerDryRun
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DRY_RUN: true
+
+    - name: echo new tag
+      run: |
+        echo "The next tag version will be: ${{ steps.taggerDryRun.outputs.new_tag }}"
+
+    - name: Minor version for each merge
+      id: taggerFinal
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        
 #       - uses: actions/checkout@v3
 
 #       # - name: Configure AWS Credentials
@@ -54,17 +74,5 @@ jobs:
 #           # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
- 
-      - name: Tag
-        id: tagging
-        uses: K-Phoen/semver-release-action@master
-        with:
-          release_branch: main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Push container to ECR
-        run: |
-          echo ${{ steps.tagging.outputs.tag }}
           
         
