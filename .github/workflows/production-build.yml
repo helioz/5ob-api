@@ -51,7 +51,7 @@ jobs:
       run: |
         echo "Building $ECR_REPOSITORY:$VERSION_TAG"
         docker build . -t $ECR_REPOSITORY:$VERSION_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
 
  
     - name: echo new tag
