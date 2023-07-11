@@ -15,57 +15,50 @@ jobs:
       id-token: write
       contents: write
 
-
     steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.pull_request.merge_commit_sha }}
-        fetch-depth: '0'
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: "0"
 
-# Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
-# First run is a dry run to generate a value to tag with, this way we avoid tagging incase of failed builds
+      # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump.
+      # First run is a dry run to generate a value to tag with, this way we avoid tagging incase of failed builds
 
-    - name: Compute version tag
-      id: taggingDryrun
-      uses: anothrNick/github-tag-action@1.36.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-        DRY_RUN: true
+      - name: Compute version tag
+        id: taggingDryrun
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DRY_RUN: true
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        role-to-assume: arn:aws:iam::762417892045:role/github-actions
-        aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::762417892045:role/github-actions
+          aws-region: us-east-1
 
-    - name: Login to Amazon ECR Private
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR Private
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build and push container to ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: 5ob-api
-        VERSION_TAG: ${{ steps.taggingDryrun.outputs.new_tag }}
-      run: |
-        echo "Building $ECR_REPOSITORY:$VERSION_TAG"
-        docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
+      - name: Build and push container to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: 5ob-api
+          VERSION_TAG: ${{ steps.taggingDryrun.outputs.new_tag }}
+        run: |
+          echo "Building $ECR_REPOSITORY:$VERSION_TAG"
+          docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
 
- 
-    - name: echo new tag
-      run: |
-        echo "The next tag version will be: ${{ steps.taggingDryrun.outputs.new_tag }}"
+      - name: echo new tag
+        run: |
+          echo "The next tag version will be: ${{ steps.taggingDryrun.outputs.new_tag }}"
 
-    - name: Tag repository
-      id: tagging
-      uses: anothrNick/github-tag-action@1.36.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-
-
-
-          
-        
+      - name: Tag repository
+        id: tagging
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
