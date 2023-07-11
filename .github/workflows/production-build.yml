@@ -22,7 +22,9 @@ jobs:
         ref: ${{ github.event.pull_request.merge_commit_sha }}
         fetch-depth: '0'
 
-    # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
+# Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
+# First run is a dry run to generate a value to tag with, this way we avoid tagging incase of failed builds
+
     - name: Compute version tag
       id: taggingDryrun
       uses: anothrNick/github-tag-action@1.36.0
